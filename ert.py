@@ -1,15 +1,15 @@
-import subprocess
 import os
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
 
 nrun = 20
-filename = 'result'
+filename = "result/result"
 threshold = 475.0
 
 # for r in range(nrun):
-#     os.system("python snp.py -n 2 -s 42 -run " + str(r))
+#     # os.system("python snp.py -n 2 -s 42 -run " + str(r))
+#     os.system("python snp.py -n 2 -f " + filename + " -run " + str(r))
 
 result_global = []
 for i in range(nrun):
@@ -37,10 +37,7 @@ for j in range(len(max(result_global, key=len))):
             success = success + 1
     distribution.append(success/nrun)
 
-print(distribution)
-
-x = np.arange(1, 8)
-y = np.random.randint(1, 20, size = 7)
+#print(distribution)
 
 fig, ax = plt.subplots()
 
@@ -56,3 +53,6 @@ plt.show()
 # Подумати за цей рандом сід. Як його встановити правильно
 # З папками розібратись, шоб зберігали результати в папку
 # шоб передавались всі правильні параметри з строку термінала через пайтон
+# шоб схрещення було і на 3 каптора, і на 4
+# дослідження області при генерації популяції
+# яка різниця між визначення функції bit i num. Для нас яку юзати?

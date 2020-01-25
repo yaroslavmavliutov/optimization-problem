@@ -61,18 +61,15 @@ def simul(func, init, neighb, again):
 
 
 # TODO add a population-based stochastic heuristic template.
-def genetic(func, init, selection, crossover, again):
+def genetic(func, init, tournament, crossover, again):
     population = init()
     dict_population = {i:func(element) for i,element in enumerate(population)}
     best_val, best_sol = dict_population.get(max(dict_population, key=dict_population.get)), population[max(dict_population, key=dict_population.get)]
     i = 1
-    #F = []
     while again(i, best_val, best_sol):
-        print(i)
-        parents_idx = selection(dict_population)
+        #print(i)
+        parents_idx = tournament(dict_population.copy())
         childs = crossover(population, parents_idx)
-        #for k,idx in enumerate(parents_idx):
-        #    population[idx] = childs[k]
         for idx in parents_idx:
             childs.append(population[idx])
 

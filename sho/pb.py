@@ -21,7 +21,7 @@ def coverage(domain, sensors, sensor_range):
             for x in sensors:
                 if distance(x,p) < sensor_range:
                     domain[py][px] = 1
-                    break
+                    #break
     return domain
 
 

@@ -1,18 +1,11 @@
 import numpy as np
 import copy
-
+import math
 from . import x,y,pb
 
 ########################################################################
 # Objective functions
 ########################################################################
-
-def cover_sum(sol, domain_width, sensor_range):
-    """Compute the coverage quality of the given array of bits."""
-    domain = np.zeros((domain_width,domain_width))
-    sensors = to_sensors(sol)
-    return np.sum(pb.coverage(domain, sensors, sensor_range))
-
 
 def to_sensors(sol):
     """Convert an square array of d lines/columns containing n ones
@@ -21,6 +14,7 @@ def to_sensors(sol):
     >>> to_sensors([[1,0],[1,0]])
     [(0, 0), (0, 1)]
     """
+    assert (len(sol) > 0)
     sensors = []
     for i in range(len(sol)):
         for j in range(len(sol[i])):
@@ -28,6 +22,18 @@ def to_sensors(sol):
                 sensors.append( (j,i) )
     return sensors
 
+def cover_sum(sol, domain_width, sensor_range, dim):
+    """Compute the coverage quality of the given array of bits."""
+    assert(0 < sensor_range <= math.sqrt(2))
+    assert(0 < domain_width)
+    assert(dim > 0)
+    assert(len(sol) >= dim)
+    domain = np.zeros((domain_width,domain_width))
+    sensors = to_sensors(sol)
+    cov = pb.coverage(domain, sensors, sensor_range*domain_width)
+    s = np.sum(cov)
+    assert(s >= len(sensors))
+    return s
 
 ########################################################################
 # Initialization
@@ -47,22 +53,25 @@ def rand(domain_width, nb_sensors):
 
 def neighb_square(sol, scale, domain_width):
     """Draw a random array by moving ones to adjacent cells."""
+    assert (0 < scale <= 1)
     # Copy, because Python pass by reference
     # and we may not want to alter the original solution.
     new = copy.copy(sol)
     for py in range(len(sol)):
         for px in range(len(sol[py])):
+            # Indices order is (y,x) in order to match
+            # coordinates of images (row,col).
             if sol[py][px] == 1:
-                new[py][px] = 0 # Remove original position.
-                d = np.random.randint(-scale//2,scale//2,2)
-                if py+y(d) < 0 :
-                    d[1] = np.random.randint(-py,scale//2)
-                if py+y(d) >= domain_width :
-                    d[1] = np.random.randint(-scale//2,domain_width-py)
-                if px+y(d) < 0 :
-                    d[0] = np.random.randint(0,scale//2)
-                if px+x(d) >= domain_width :
-                    d[0] = np.random.randint(-scale//2,domain_width-px)
-                new[py+y(d)][px+x(d)] = 1
+                # Add a one somewhere around.
+                w = scale / 2 * domain_width
+                ny = np.random.randint(py - w, py + w)
+                nx = np.random.randint(px - w, px + w)
+                ny = min(max(0, ny), domain_width - 1)
+                nx = min(max(0, nx), domain_width - 1)
+
+                if new[nx][ny] != 1:
+                    new[py][px] = 0  # Remove original position.
+                    new[ny][nx] = 1
+                # else pass
     return new
 

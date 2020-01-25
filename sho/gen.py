@@ -34,7 +34,6 @@ def cover_sum(sol, domain_width, sensor_range, dim):
     return s
 
 
-
 ########################################################################
 # Initialization
 ########################################################################
@@ -43,14 +42,52 @@ def rand(dim, scale):
     """Draw a random vector in [0,scale]**dim."""
     return np.random.random(dim) * scale
 
+def population(p_size, dim, scale):
+    P = []
+    for i in range(p_size):
+        P.append(np.random.random(dim) * scale)
+    return P
+
 ########################################################################
-# Neighborhood
+# Generation
 ########################################################################
 
-def neighb_square(sol, scale, domain_width):
-    """Draw a random vector in a square of witdh `scale`
-    around the given one."""
-    # TODO handle constraints
-    new = sol + (np.random.random(len(sol)) * scale - scale/2)
-    return new
+# selection
+def tournament(population, num_parent):
+    idx = []
+    for i in range(num_parent):
+        idx.append(max(population, key=population.get))
+        del population[idx[-1]]
+    return idx
 
+def crossover(population, idx_parents, mutation, scale):
+    childs = []
+    nb_parents = len(idx_parents)
+    np.random.shuffle(idx_parents)
+    for i in range(0, nb_parents, 2):
+        mom = population[idx_parents[i]]
+        dad = population[idx_parents[i+1]]
+        nb_gens = len(mom)
+        child1 = []
+        child2 = []
+        choice = [mom, dad]
+
+        for gen in range(0, nb_gens):
+            parent = np.random.randint(2)
+            child1.append(choice[parent][gen])
+            child2.append(choice[1-parent][gen])
+
+            if np.random.random() <= mutation:
+                while True:
+                    child1[gen] = child1[gen] + np.random.uniform(low=-2.0, high=2.0)
+                    if child1[gen] >= 0.0 and child1[gen] < scale:
+                        break
+
+            if np.random.random() <= mutation:
+                while True:
+                    child2[gen] = child2[gen] + np.random.uniform(low=-2.0, high=2.0)
+                    if child2[gen] >= 0.0 and child2[gen] < scale:
+                        break
+        childs.append(np.asarray(child1))
+        childs.append(np.asarray(child2))
+    return childs
