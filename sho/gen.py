@@ -43,6 +43,7 @@ def rand(dim, scale):
     return np.random.random(dim) * scale
 
 def population(p_size, dim, scale):
+    assert (p_size > 0)
     P = []
     for i in range(p_size):
         P.append(np.random.random(dim) * scale)
@@ -54,6 +55,8 @@ def population(p_size, dim, scale):
 
 # selection
 def tournament(population, num_parent):
+    assert ((num_parent % 2) == 0)
+    assert (0 < num_parent < len(population))
     idx = []
     for i in range(num_parent):
         idx.append(max(population, key=population.get))
@@ -61,6 +64,7 @@ def tournament(population, num_parent):
     return idx
 
 def crossover(population, idx_parents, mutation, scale):
+    assert (0 <= mutation <= 1)
     childs = []
     nb_parents = len(idx_parents)
     np.random.shuffle(idx_parents)
