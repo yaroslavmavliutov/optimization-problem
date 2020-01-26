@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from sho import make, algo, iters, plot, num, bit, pb, obj, gen
+from sho import make, algo, iters, plot, num, bit, pb, obj, gen, annealing
 
 ########################################################################
 # Interface
@@ -142,24 +142,24 @@ if __name__=="__main__":
                     scale = the.domain_width),
                 iters
             )
-        sensors = num.to_sensors(sol)
+        sensors = gen.to_sensors(sol)
 
     # Recuit simulé (Simulated annealing)
     elif the.solver == "sa":
-        val, sol=algo.simul(
-                make.func(num.cover_sum,
+        val, sol=algo.sa(
+                make.func(annealing.cover_sum,
                       domain_width=the.domain_width,
                       sensor_range=the.sensor_range,
                       dim=d * the.nb_sensors),
-                make.init(num.rand,
+                make.init(annealing.rand,
                     dim = d * the.nb_sensors,
                     scale = the.domain_width),
-                make.neig(num.neighb_square,
+                make.neig(annealing.neighb_square,
                     scale=the.variation_scale,
                     domain_width=the.domain_width),
                 iters
             )
-        sensors = num.to_sensors(sol)
+        sensors = annealing.to_sensors(sol)
 
     elif the.solver == "bit_greedy":
         val, sol = algo.greedy(
@@ -202,4 +202,4 @@ if __name__=="__main__":
     domain = plot.highlight_sensors(domain, sensors)
     ax2.imshow(domain)
 
-    #plt.show()
+    plt.show()

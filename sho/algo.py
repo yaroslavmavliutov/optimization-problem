@@ -36,27 +36,28 @@ def greedy(func, init, neighb, again):
     return best_val, best_sol
 
 # TODO add a simulated-annealing template.
-def simul(func, init, neighb, again):
-    T = 100
+def sa(func, init, neighb, again):
     best_sol = init()
-    print("sol: ", best_sol)
     best_val = func(best_sol)
     val,sol = best_val,best_sol
     i = 1
-    while again(i, best_val, best_sol) or T > 0:
-        #sol = neighb(best_sol)
-        val = func(sol)
-        r = neighb(best_sol)
-        valr = func(r)
-        deltaE = val - valr
+    k = 1
+    T = 100
+    while again(i, best_val, best_sol):
+        alpha = 0.95
+        #T = max(0.01, min(1, 1 - alpha))
+        r_sol = neighb(sol)
+        r_val = func(sol)
+        deltaE = val - r_val
         p = np.random.uniform()
-        if deltaE <0 or p < (np.exp(-deltaE/T)):
-            sol = r
-        if val >= best_val:
-            best_val = val
-            best_sol = sol
-        T = 0.01*T
+        if deltaE < 0.0 or p < np.exp(-deltaE/T):
+            sol = r_sol
+        if func(sol) >= best_val:
+            best_val, best_sol = func(sol), sol
+        print(i)
+        T = T*alpha
         i += 1
+        k += 1
     return best_val, best_sol
 
 
