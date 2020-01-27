@@ -30,7 +30,7 @@ if __name__=="__main__":
     can.add_argument("-s", "--seed", metavar="VAL", default=None, type=int,
             help="Random pseudo-generator seed (none for current epoch)")
 
-    can.add_argument("-f", "--fname", metavar="NAME", default="result",
+    can.add_argument("-f", "--fname", metavar="NAME", default="file_result_runs",
                      help="Name of result files")
 
     solvers = ["num_greedy","bit_greedy", "sa", "genetic"]
@@ -101,10 +101,18 @@ if __name__=="__main__":
     val,sol,sensors = None,None,None
     if the.solver == "num_greedy":
         val, sol = algo.greedy(
-            make.func(num.cover_sum,
-                      domain_width=the.domain_width,
-                      sensor_range=the.sensor_range,
-                      dim=d * the.nb_sensors),
+            make.func(obj.save,
+                      func=make.func(num.cover_sum,
+                              domain_width=the.domain_width,
+                              sensor_range=the.sensor_range,
+                              dim=d * the.nb_sensors),
+                      nrun=the.nb_run,
+                      fname=the.fname
+                      ),
+            # make.func(num.cover_sum,
+            #           domain_width=the.domain_width,
+            #           sensor_range=the.sensor_range,
+            #           dim=d * the.nb_sensors),
             make.init(num.rand,
                       dim=d * the.nb_sensors,
                       scale=the.domain_width),
@@ -147,10 +155,18 @@ if __name__=="__main__":
     # Recuit simulé (Simulated annealing)
     elif the.solver == "sa":
         val, sol=algo.sa(
-                make.func(annealing.cover_sum,
-                      domain_width=the.domain_width,
-                      sensor_range=the.sensor_range,
-                      dim=d * the.nb_sensors),
+                make.func(obj.save,
+                      func=make.func(annealing.cover_sum,
+                                domain_width=the.domain_width,
+                                sensor_range=the.sensor_range,
+                                dim=d * the.nb_sensors),
+                      nrun=the.nb_run,
+                      fname=the.fname
+                      ),
+                # make.func(annealing.cover_sum,
+                #       domain_width=the.domain_width,
+                #       sensor_range=the.sensor_range,
+                #       dim=d * the.nb_sensors),
                 make.init(annealing.rand,
                     dim = d * the.nb_sensors,
                     scale = the.domain_width),
@@ -163,10 +179,18 @@ if __name__=="__main__":
 
     elif the.solver == "bit_greedy":
         val, sol = algo.greedy(
-            make.func(bit.cover_sum,
-                      domain_width=the.domain_width,
-                      sensor_range=the.sensor_range,
-                      dim=d * the.nb_sensors),
+            make.func(obj.save,
+                      func=make.func(bit.cover_sum,
+                                  domain_width=the.domain_width,
+                                  sensor_range=the.sensor_range,
+                                  dim=d * the.nb_sensors),
+                      nrun=the.nb_run,
+                      fname=the.fname
+                      ),
+            # make.func(bit.cover_sum,
+            #           domain_width=the.domain_width,
+            #           sensor_range=the.sensor_range,
+            #           dim=d * the.nb_sensors),
             make.init(bit.rand,
                       domain_width=the.domain_width,
                       nb_sensors=the.nb_sensors),
@@ -202,4 +226,4 @@ if __name__=="__main__":
     domain = plot.highlight_sensors(domain, sensors)
     ax2.imshow(domain)
 
-    plt.show()
+    #plt.show()

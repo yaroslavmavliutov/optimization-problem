@@ -2,14 +2,21 @@ import os
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
+import timeit
 
 nrun = 20
-filename = "result/result"
+solvers = ["num_greedy","bit_greedy", "sa", "genetic"]
+selected = solvers[3]
+filename = "result_" + selected + "/result"
 threshold = 475.0
 
-# for r in range(nrun):
-#     # os.system("python snp.py -n 2 -s 42 -run " + str(r))
-#     os.system("python snp.py -n 2 -f " + filename + " -run " + str(r))
+start = timeit.default_timer()
+
+for r in range(nrun):
+    # os.system("python snp.py -n 2 -s 42 -run " + str(r))
+    os.system("python snp.py -n 2 -m "+ selected + " -f " + filename + " -run " + str(r))
+
+stop_algo = timeit.default_timer()
 
 result_global = []
 for i in range(nrun):
@@ -37,7 +44,11 @@ for j in range(len(max(result_global, key=len))):
             success = success + 1
     distribution.append(success/nrun)
 
-#print(distribution)
+stop_dist = timeit.default_timer()
+
+print('Time to find the optimal value: ', stop_algo - start)
+print('Time to calculate the distribution: ', stop_dist - stop_algo)
+print('Total Time: ', stop_dist - start)
 
 fig, ax = plt.subplots()
 
@@ -56,3 +67,4 @@ plt.show()
 # шоб схрещення було і на 3 каптора, і на 4 +++++++++++++++++++++++++++
 # дослідження області при генерації популяції
 # яка різниця між визначення функції bit i num. Для нас яку юзати?
+# другий алгоритм recuit simule
