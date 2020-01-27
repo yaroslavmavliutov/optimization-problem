@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from sho import make, algo, iters, plot, num, bit, pb, obj, gen, annealing
+from sho import make, algo, iters, plot, num, bit, pb, obj, gen
 
 ########################################################################
 # Interface
@@ -33,7 +33,8 @@ if __name__=="__main__":
     can.add_argument("-f", "--fname", metavar="NAME", default="file_result_runs",
                      help="Name of result files")
 
-    solvers = ["num_greedy","bit_greedy", "sa", "genetic"]
+    solvers = ["num_random", "num_greedy", "bit_greedy", "sa", "genetic"]
+
     can.add_argument("-m", "--solver", metavar="NAME", choices=solvers, default="genetic",
             help="Solver to use, among: "+", ".join(solvers))
 
@@ -46,8 +47,8 @@ if __name__=="__main__":
     can.add_argument("-e", "--steady-epsilon", metavar="DVAL", default=0, type=float,
             help="Stop if the improvement of the objective function value is lesser than DVAL")
 
-    can.add_argument("-tmp", "--init-tmp", metavar="RATIO", default=10, type=float,
-                     help="Initial of temperature")
+    # can.add_argument("-tmp", "--init-tmp", metavar="RATIO", default=10, type=float,
+    #                  help="Initial of temperature")
 
     # can.add_argument("-a", "--alpha", metavar="RATIO", default=0.2, type=float,
     #                  help="Reduction of temperature")
@@ -109,10 +110,6 @@ if __name__=="__main__":
                       nrun=the.nb_run,
                       fname=the.fname
                       ),
-            # make.func(num.cover_sum,
-            #           domain_width=the.domain_width,
-            #           sensor_range=the.sensor_range,
-            #           dim=d * the.nb_sensors),
             make.init(num.rand,
                       dim=d * the.nb_sensors,
                       scale=the.domain_width),
@@ -122,23 +119,35 @@ if __name__=="__main__":
             iters
         )
         sensors = num.to_sensors(sol)
-
+    elif the.solver == "num_random":
+        val, sol = algo.random(
+            make.func(obj.save,
+                      func=make.func(num.cover_sum,
+                                     domain_width=the.domain_width,
+                                     sensor_range=the.sensor_range,
+                                     dim=d * the.nb_sensors),
+                      nrun=the.nb_run,
+                      fname=the.fname
+                      ),
+            make.init(num.rand,
+                      dim=d * the.nb_sensors,
+                      scale=the.domain_width),
+            iters
+        )
+        sensors = num.to_sensors(sol)
     elif the.solver == "genetic":
         popul_size = 50 #population size
         number = 10 #number of parents
         proba = 0.1 #proba of mutation
         val,sol = algo.genetic(
                 make.func(obj.save,
-                    func=make.func(gen.cover_sum,
+                    func=make.func(num.cover_sum,
                             domain_width=the.domain_width,
                             sensor_range=the.sensor_range,
                             dim=d * the.nb_sensors),
                     nrun=the.nb_run,
                     fname=the.fname
                 ),
-                # make.func(num.cover_sum,
-                #    domain_width = the.domain_width,
-                #    sensor_range = the.sensor_range * the.domain_width),
                 make.init(gen.population,
                     p_size = popul_size,
                     dim = d*the.nb_sensors,
@@ -150,13 +159,13 @@ if __name__=="__main__":
                     scale = the.domain_width),
                 iters
             )
-        sensors = gen.to_sensors(sol)
+        sensors = num.to_sensors(sol)
 
     # Recuit simulé (Simulated annealing)
     elif the.solver == "sa":
         val, sol=algo.sa(
                 make.func(obj.save,
-                      func=make.func(annealing.cover_sum,
+                      func=make.func(num.cover_sum,
                                 domain_width=the.domain_width,
                                 sensor_range=the.sensor_range,
                                 dim=d * the.nb_sensors),
@@ -167,15 +176,15 @@ if __name__=="__main__":
                 #       domain_width=the.domain_width,
                 #       sensor_range=the.sensor_range,
                 #       dim=d * the.nb_sensors),
-                make.init(annealing.rand,
+                make.init(num.rand,
                     dim = d * the.nb_sensors,
                     scale = the.domain_width),
-                make.neig(annealing.neighb_square,
+                make.neig(num.neighb_square,
                     scale=the.variation_scale,
                     domain_width=the.domain_width),
                 iters
             )
-        sensors = annealing.to_sensors(sol)
+        sensors = num.to_sensors(sol)
 
     elif the.solver == "bit_greedy":
         val, sol = algo.greedy(

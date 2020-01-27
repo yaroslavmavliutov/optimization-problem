@@ -42,17 +42,17 @@ def sa(func, init, neighb, again):
     val,sol = best_val,best_sol
     i = 1
     k = 1
-    T = 100
-    while again(i, best_val, best_sol):
-        alpha = 0.95
+    T = 1000
+    while again(i, best_val, best_sol) and T>=0:
+        alpha = 0.9
         #T = max(0.01, min(1, 1 - alpha))
         r_sol = neighb(sol)
-        r_val = func(sol)
+        r_val = func(r_sol)
         deltaE = val - r_val
         p = np.random.uniform()
         if deltaE < 0.0 or p < np.exp(-deltaE/T):
             sol = r_sol
-        if func(sol) >= best_val:
+        if func(sol) > best_val:
             best_val, best_sol = func(sol), sol
         print(i)
         T = T*alpha
@@ -64,6 +64,7 @@ def sa(func, init, neighb, again):
 # TODO add a population-based stochastic heuristic template.
 def genetic(func, init, tournament, crossover, again):
     population = init()
+    #print(population)
     dict_population = {i:func(element) for i,element in enumerate(population)}
     best_val, best_sol = dict_population.get(max(dict_population, key=dict_population.get)), population[max(dict_population, key=dict_population.get)]
     i = 1
