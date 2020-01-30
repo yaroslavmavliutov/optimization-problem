@@ -29,6 +29,8 @@ def tournament(population, num_parent):
     idx = []
     for i in range(num_parent):
         idx.append(max(population, key=population.get))
+        # to avoid a element repetition, we need to delete the element
+        # we use population.copy() here
         del population[idx[-1]]
     return idx
 
@@ -45,12 +47,14 @@ def crossover(population, idx_parents, mutation, scale):
         child2 = []
         choice = [mom, dad]
 
+        # numbers of genes is numbers of coordinates
         for gen in range(0, nb_gens):
             parent = np.random.randint(2)
             child1.append(choice[parent][gen])
             child2.append(choice[1-parent][gen])
 
             if np.random.random() <= mutation:
+                # to avoid going outside the area
                 while True:
                     child1[gen] = child1[gen] + np.random.uniform(low=-2.0, high=2.0)
                     if child1[gen] >= 0.0 and child1[gen] < scale:

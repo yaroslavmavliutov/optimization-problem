@@ -47,14 +47,8 @@ if __name__=="__main__":
     can.add_argument("-e", "--steady-epsilon", metavar="DVAL", default=0, type=float,
             help="Stop if the improvement of the objective function value is lesser than DVAL")
 
-    # can.add_argument("-tmp", "--init-tmp", metavar="RATIO", default=10, type=float,
-    #                  help="Initial of temperature")
-
-    # can.add_argument("-a", "--alpha", metavar="RATIO", default=0.2, type=float,
-    #                  help="Reduction of temperature")
-
     can.add_argument("-run", "--nb-run", metavar="NB", default=0, type=int,
-                     help="Number of run")
+                     help="Run number")
 
     can.add_argument("-a", "--variation-scale", metavar="RATIO", default=0.3, type=float,
                      help="Scale of the variation operators (as a ration of the domain width)")

@@ -35,7 +35,7 @@ def greedy(func, init, neighb, again):
         i += 1
     return best_val, best_sol
 
-# TODO add a simulated-annealing template.
+
 def sa(func, init, neighb, again):
     best_sol = init()
     best_val = func(best_sol)
@@ -61,17 +61,16 @@ def sa(func, init, neighb, again):
     return best_val, best_sol
 
 
-# TODO add a population-based stochastic heuristic template.
 def genetic(func, init, tournament, crossover, again):
     population = init()
-    #print(population)
     dict_population = {i:func(element) for i,element in enumerate(population)}
     best_val, best_sol = dict_population.get(max(dict_population, key=dict_population.get)), population[max(dict_population, key=dict_population.get)]
     i = 1
     while again(i, best_val, best_sol):
-        #print(i)
         parents_idx = tournament(dict_population.copy())
         childs = crossover(population, parents_idx)
+
+        # we are creating new population consisting childs and parents
         for idx in parents_idx:
             childs.append(population[idx])
 
