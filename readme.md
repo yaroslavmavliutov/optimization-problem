@@ -8,6 +8,10 @@ The framework implements a simple sensor placement problem
 and handle metaheuristics manipulating solutions represented as
 numerical vectors or bitstrings.
 
+Exemple (2 sensors)
+![result](image_distribution/2sensors.png)
+
+
 The task proposed by Johann Dreo <johann.dreo@thalesgroup.com> ⓒ Thales group
 
 
@@ -117,3 +121,25 @@ depending on the number of function calls.
 ![result](image_distribution/4sensors_thresh830.png)
 
 ![result](image_distribution/4sensors_thresh850.png)
+
+
+Disccussion
+-----------
+
+In this work, we tried to explore the convergence of algorithm to finding optimal solution. 
+ 
+The main idea of this problem was to implement an algorithm that could be more productive than *random*.
+Considering in our case the *Genetic* algorithm, the number of function calls depends directly on the population size and the number of parents.
+We implemented *Genetic* algo with a little modification in order to increase its performance - we are artificially reducing the population size.
+But our reducing appears after the first iteration and then size of population doesn't change.
+As we can see, *Genetic* beat other algorithms for performance and he needs not a lot of function calculations.
+In our case, we initialize the population size n=100, then it is 30. If we have 50 iterations:
+`1*100 + 49*28 = 1472`function calls, or `50*100 = 5000`function calls.
+Of course, in the first case, the algorithm will finish the calculations faster 
+and as the experience shows, we will get the optimal value quickly enough.
+
+If we initialize a large enough population, we are more likely to get individuals with different genes, 
+which will make the population more variable.
+
+In the future, it can be interesting to dynamically change the population size.
+

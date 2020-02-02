@@ -48,14 +48,14 @@ def lineplot(ax, x_data, y_data, color, algo):
 def main():
     nrun = 20
     solvers = ["genetic", "num_random", "num_greedy"]
-    threshold = 830.0
-    nsensors = 4
+    threshold = 490.0
+    nsensors = 2
 
     distribution = dict()
 
     for selected in solvers:
-        result_dir = str(nsensors) + "sensors_result_" + selected
-        #result_dir = "result_" + selected
+        #result_dir = str(nsensors) + "sensors_result_" + selected
+        result_dir = "result_" + selected
         fname = "result"
         filepath = op.join(result_dir, fname)
 
@@ -66,19 +66,18 @@ def main():
         if selected == "genetic":
             exec = "python snp.py -n " + str(nsensors) + " -m " + selected + " -f " + filepath
         else:
-
             # in order to make the results of the algorithms comparable we artificially increase the number of iterations
             if "genetic" in distribution.keys():
                 exec = "python snp.py -n " + str(nsensors) + " -m " + selected + " -f " + filepath + " -i " + \
                        str(len(distribution["genetic"])) + " -y " + str(len(distribution["genetic"]))
             else: exec = "python snp.py -n " + str(nsensors) + " -m " + selected + " -f " + filepath
 
-        #find_optimal(nrun=nrun, execute=exec)
+        find_optimal(nrun=nrun, execute=exec)
         stop_algo = timeit.default_timer()
         distribution[selected] = create_distribution(nrun=nrun, threshold=threshold, filename=filepath)
         stop_dist = timeit.default_timer()
         print("----------------", selected)
-        print('Time to find the optimal value: ', stop_algo - start)
+        print('Time to find the optimal value (all runs): ', stop_algo - start)
         print('Time to calculate the distribution: ', stop_dist - stop_algo)
         print('Total Time: ', stop_dist - start)
 
@@ -96,6 +95,4 @@ def main():
 if __name__ == '__main__':
     main()
 
-
-# дослідження області при генерації популяції
 # mavliutov.zip

@@ -130,8 +130,8 @@ if __name__=="__main__":
         )
         sensors = num.to_sensors(sol)
     elif the.solver == "genetic":
-        popul_size = 50 #population size
-        number = 10 #number of parents
+        popul_size = 100 #population size
+        number = 12 #number of parents, must be even number
         proba = 0.1 #proba of mutation
         val,sol = algo.genetic(
                 make.func(obj.save,
